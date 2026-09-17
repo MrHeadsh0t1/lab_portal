@@ -66,6 +66,6 @@ group :test do
 end
 
 gem "devise"
-gem "json", "~> 2.18"
+gem "json", "~> 3.0"
 gem "omniauth-google-oauth2"
 gem "omniauth-rails_csrf_protection"
