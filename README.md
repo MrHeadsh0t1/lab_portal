@@ -1,11 +1,22 @@
-# Lab Portal
+# Service-Oriented Software Assignment
 
-Lab Portal is a Ruby on Rails web application developed for the course
-**Service-Oriented Software**.
+This repository contains the complete university assignment developed for the course **Service-Oriented Software**.
 
-The application provides a collaboration platform where students can
-communicate, publish posts, create personal contacts and form groups for
-laboratory projects.
+The project consists of two parts:
+
+1. **Part 1 – Lab Portal**  
+   A Ruby on Rails web application for student collaboration, posts, contacts, private messaging, group conversations and instant notifications.
+
+2. **Part 2 – Todo REST API**  
+   A Ruby on Rails REST API that provides user authentication and management of Todos and Todo Items. The API was tested using automated tests and HTTPie and is documented using OpenAPI 3.0.
+
+---
+
+# Part 1 – Lab Portal
+
+## Description
+
+Lab Portal is a Ruby on Rails web application that provides a collaboration platform where students can communicate, publish posts, create personal contacts and form groups for laboratory projects.
 
 ## Features
 
@@ -78,15 +89,163 @@ Users receive notifications for:
 - New private messages
 - New group messages
 
-Notifications appear instantly without requiring a page refresh and can
-also be viewed from the Notifications page.
+Notifications appear instantly without requiring a page refresh and can also be viewed from the Notifications page.
 
-## Technologies
+---
 
-The project uses:
+# Part 2 – Todo REST API
 
-- Ruby
-- Ruby on Rails
+The second part of the assignment is located in:
+
+```text
+part2_api/
+```
+
+It is a Ruby on Rails API application that provides authentication and CRUD operations for Todos and Todo Items.
+
+## Authentication
+
+Authentication is implemented using Bearer tokens.
+
+The API supports:
+
+- User signup
+- User login
+- User logout
+- Protected Todo and Item endpoints
+
+## REST API Endpoints
+
+### Authentication
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/signup` | Signup |
+| POST | `/auth/login` | Login |
+| GET | `/auth/logout` | Logout |
+
+### Todos
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/todos` | List all todos and todo items |
+| POST | `/todos` | Create a new todo |
+| GET | `/todos/:id` | Get a todo |
+| PUT | `/todos/:id` | Update a todo |
+| DELETE | `/todos/:id` | Delete a todo and its items |
+
+### Todo Items
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/todos/:id/items` | Create a new todo item |
+| GET | `/todos/:id/items/:iid` | Get a todo item |
+| PUT | `/todos/:id/items/:iid` | Update a todo item |
+| DELETE | `/todos/:id/items/:iid` | Delete a todo item |
+
+## Part 2 Models
+
+The REST API contains three main models:
+
+- `User`
+- `Todo`
+- `Item`
+
+Their main relationships are:
+
+```text
+User 1 -------- * Todo
+Todo 1 -------- * Item
+```
+
+Deleting a Todo also deletes its associated Items.
+
+## Automated Tests
+
+The API includes model and controller/integration tests.
+
+Tests cover:
+
+- User validation and authentication
+- Signup
+- Login
+- Logout
+- Authorization
+- Todo creation
+- Todo retrieval
+- Todo update
+- Todo deletion
+- Item creation
+- Item retrieval
+- Item update
+- Item deletion
+- Invalid and unauthorized requests
+
+Run all tests with:
+
+```powershell
+cd part2_api
+rails test
+```
+
+Current test suite:
+
+```text
+28 runs
+58 assertions
+0 failures
+0 errors
+0 skips
+```
+
+## HTTPie Testing
+
+The REST API was also manually tested using HTTPie.
+
+Example login:
+
+```powershell
+python -m httpie POST http://localhost:3000/auth/login email="demo@restapi.com" password="123456"
+```
+
+Store the returned Bearer token:
+
+```powershell
+$token="YOUR_TOKEN"
+```
+
+Create a Todo:
+
+```powershell
+python -m httpie POST http://localhost:3000/todos "Authorization:Bearer $token" title="Complete REST API Assignment"
+```
+
+List Todos and their Items:
+
+```powershell
+python -m httpie GET http://localhost:3000/todos "Authorization:Bearer $token"
+```
+
+## OpenAPI / Swagger Documentation
+
+The REST API is documented using **OpenAPI 3.0**.
+
+The specification is located at:
+
+```text
+part2_api/docs/openapi.yaml
+```
+
+The file can be opened with Swagger Editor to inspect the API endpoints, request schemas, response schemas and Bearer authentication configuration.
+
+---
+
+# Technologies
+
+Technologies used across the two parts include:
+
+- Ruby 4.0.7
+- Ruby on Rails 8.1.3.1
 - SQLite
 - Devise
 - OmniAuth
@@ -96,51 +255,75 @@ The project uses:
 - Stimulus
 - HTML / ERB
 - CSS
+- REST
+- JSON
+- Bearer Token Authentication
+- HTTPie
+- Minitest
+- OpenAPI 3.0 / Swagger
 - Git
 - GitHub
 
-## Requirements
+---
 
-The development environment used for this project includes:
+# Repository Structure
 
-- Ruby 4.0.7
-- Rails 8.1.3.1
-- Git
-
-## Installation
-
-Clone the repository:
-
-```bash
-git clone https://github.com/MrHeadsh0t1/lab_portal.git
+```text
+lab_portal/
+│
+├── app/                 # Part 1 - Lab Portal application
+├── config/
+├── db/
+├── test/
+│
+├── part2_api/           # Part 2 - Todo REST API
+│   ├── app/
+│   ├── config/
+│   ├── db/
+│   ├── docs/
+│   │   └── openapi.yaml
+│   └── test/
+│
+├── Gemfile
+├── Gemfile.lock
+└── README.md
 ```
 
-Enter the project directory:
+---
 
-```bash
+# Installation
+
+## Clone the Repository
+
+```powershell
+git clone https://github.com/MrHeadsh0t1/lab_portal.git
 cd lab_portal
 ```
 
-Install the required gems:
+---
 
-```bash
+# Running Part 1 – Lab Portal
+
+Install dependencies:
+
+```powershell
 bundle install
 ```
 
-Create and migrate the database:
+Prepare the database:
 
-```bash
+```powershell
 rails db:create
 rails db:migrate
 ```
 
-Start the Rails server:
+Start the server:
 
-```bash
+```powershell
 rails server
 ```
 
-Then open:
+Open:
 
 ```text
 http://localhost:3000
@@ -148,28 +331,21 @@ http://localhost:3000
 
 ## Google OAuth Configuration
 
-Google authentication requires a Google OAuth 2.0 Client ID and Client
-Secret.
+Google authentication requires a Google OAuth 2.0 Client ID and Client Secret.
 
 For security reasons, these credentials are not stored in the repository.
 
-Before starting the application, configure the following environment
-variables:
-
-### Windows PowerShell
+On Windows PowerShell:
 
 ```powershell
 $env:GOOGLE_CLIENT_ID="your_google_client_id"
 $env:GOOGLE_CLIENT_SECRET="your_google_client_secret"
-```
-
-Then start Rails from the same PowerShell window:
-
-```powershell
 rails server
 ```
 
-The Google OAuth application should use the following local configuration:
+The environment variables must be configured in the same PowerShell session before starting the Rails server.
+
+Local OAuth configuration:
 
 ```text
 Authorized JavaScript origin:
@@ -179,66 +355,47 @@ Authorized redirect URI:
 http://localhost:3000/users/auth/google_oauth2/callback
 ```
 
-## Main Application Structure
+---
 
-```text
-app/
-├── controllers/
-│   ├── contacts_controller.rb
-│   ├── conversations_controller.rb
-│   ├── messages_controller.rb
-│   ├── notifications_controller.rb
-│   ├── posts_controller.rb
-│   └── users_controller.rb
-│
-├── models/
-│   ├── contact.rb
-│   ├── conversation.rb
-│   ├── conversation_member.rb
-│   ├── message.rb
-│   ├── notification.rb
-│   ├── post.rb
-│   └── user.rb
-│
-├── views/
-│   ├── conversations/
-│   ├── devise/
-│   ├── home/
-│   ├── messages/
-│   ├── notifications/
-│   ├── posts/
-│   └── users/
-│
-└── javascript/
-    └── controllers/
+# Running Part 2 – Todo REST API
+
+From the repository root:
+
+```powershell
+cd part2_api
+bundle install
+rails db:create
+rails db:migrate
+rails server
 ```
 
-## Database Models
+The REST API will be available at:
 
-The main models of the application are:
+```text
+http://localhost:3000
+```
 
-- User
-- Post
-- Contact
-- Message
-- Conversation
-- ConversationMember
-- Notification
+Part 1 and Part 2 are separate Rails applications. Only one application should normally use port `3000` at a time.
 
-The database structure is managed through Rails migrations.
+To run the automated test suite:
 
-## Security
+```powershell
+rails test
+```
 
-Authentication is handled using Devise.
+---
 
-Google authentication is implemented using OmniAuth and Google OAuth 2.0.
+# Security
 
-Sensitive Google OAuth credentials are loaded through environment variables
-and are not included in the Git repository.
+Part 1 authentication is handled using Devise and Google OAuth 2.0.
 
-Users must be authenticated to access the main application functionality.
+Part 2 uses password hashing and Bearer token authentication for protected API endpoints.
 
-## Repository
+Sensitive Google OAuth credentials are loaded through environment variables and are not stored in the Git repository.
+
+---
+
+# Repository
 
 GitHub repository:
 
@@ -246,6 +403,10 @@ GitHub repository:
 https://github.com/MrHeadsh0t1/lab_portal
 ```
 
-## Author
+---
 
-Vaios Koutsikos
+# Author
+
+**Vaios Koutsikos**
+
+Developed for the university course **Service-Oriented Software**.
