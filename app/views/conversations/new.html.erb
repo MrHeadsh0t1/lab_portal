@@ -1,0 +1,33 @@
+<h1>Create Group Chat</h1>
+
+<%= form_with model: @conversation do |form| %>
+
+  <div>
+    <%= form.label :name, "Group Name" %><br>
+    <%= form.text_field :name, required: true %>
+  </div>
+
+  <br>
+
+  <h3>Select Members</h3>
+
+  <% @users.each do |user| %>
+    <div>
+      <%= check_box_tag "conversation[user_ids][]",
+                        user.id,
+                        false,
+                        id: "user_#{user.id}" %>
+
+      <%= label_tag "user_#{user.id}", user.username %>
+    </div>
+  <% end %>
+
+  <br>
+
+  <%= form.submit "Create Group" %>
+
+<% end %>
+
+<br>
+
+<%= link_to "Back", conversations_path %>

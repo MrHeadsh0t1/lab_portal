@@ -1,0 +1,69 @@
+<div class="page-header">
+  <div>
+    <h1>Private Messages</h1>
+    <p class="text-muted">
+      Start a private conversation with one of your contacts.
+    </p>
+  </div>
+</div>
+
+<div class="card">
+  <% if @contacts.any? %>
+
+    <div class="contact-list">
+
+      <% @contacts.each do |contact| %>
+
+        <% unread_count = Message.where(
+             sender: contact,
+             receiver: current_user,
+             read: false
+           ).count %>
+
+        <div class="message-contact">
+
+          <div class="message-user-info">
+
+            <div class="profile-avatar small-avatar">
+              <%= contact.username.first.upcase %>
+            </div>
+
+            <div>
+              <h3><%= contact.username %></h3>
+              <span class="text-muted"><%= contact.email %></span>
+            </div>
+
+          </div>
+
+          <div class="message-contact-actions">
+
+            <% if unread_count > 0 %>
+              <span class="unread-badge">
+                <%= unread_count %> new
+              </span>
+            <% end %>
+
+            <%= link_to "Open Chat",
+                        chat_path(contact),
+                        class: "btn",
+                        onclick: "window.open(this.href, 'chat_#{contact.id}', 'width=500,height=650,resizable=yes,scrollbars=yes'); return false;" %>
+
+          </div>
+
+        </div>
+
+      <% end %>
+
+    </div>
+
+  <% else %>
+
+    <div class="empty-state">
+      <h3>No contacts yet</h3>
+      <p>Add users to your contacts before starting a private conversation.</p>
+
+      <%= link_to "Find Users", users_path, class: "btn" %>
+    </div>
+
+  <% end %>
+</div>

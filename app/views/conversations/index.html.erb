@@ -1,0 +1,62 @@
+<div class="page-header">
+  <div>
+    <h1>Group Chats</h1>
+    <p class="text-muted">
+      Collaborate and communicate with multiple users.
+    </p>
+  </div>
+
+  <%= link_to "Create Group", new_conversation_path, class: "btn" %>
+</div>
+
+<% if @conversations.any? %>
+
+  <div class="groups-grid">
+
+    <% @conversations.each do |conversation| %>
+
+      <div class="group-card">
+
+        <div class="group-icon">
+          👥
+        </div>
+
+        <h2><%= conversation.name %></h2>
+
+        <p class="text-muted">
+          <%= conversation.users.count %> members
+        </p>
+
+        <div class="group-members">
+          <% conversation.users.limit(4).each do |user| %>
+            <span class="member-badge">
+              <%= user.username %>
+            </span>
+          <% end %>
+        </div>
+
+        <%= link_to "Open Group Chat",
+                    conversation_path(conversation),
+                    class: "btn" %>
+
+      </div>
+
+    <% end %>
+
+  </div>
+
+<% else %>
+
+  <div class="empty-state">
+    <h3>No group chats yet</h3>
+
+    <p>
+      Create a group and start collaborating with other users.
+    </p>
+
+    <%= link_to "Create Group",
+                new_conversation_path,
+                class: "btn" %>
+  </div>
+
+<% end %>

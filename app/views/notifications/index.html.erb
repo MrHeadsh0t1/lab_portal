@@ -1,0 +1,74 @@
+<div class="page-header">
+
+  <div>
+    <h1>Notifications</h1>
+
+    <p class="text-muted">
+      Your latest private and group message notifications.
+    </p>
+  </div>
+
+</div>
+
+
+<% if @notifications.any? %>
+
+  <div class="notification-list">
+
+    <% @notifications.each do |notification| %>
+
+      <div class="notification-item <%= notification.read ? 'notification-read' : 'notification-unread' %>">
+
+        <div class="notification-icon">
+          🔔
+        </div>
+
+        <div class="notification-content">
+
+          <strong>
+            <%= notification.message %>
+          </strong>
+
+          <span>
+            <%= notification.created_at.strftime("%d/%m/%Y %H:%M") %>
+          </span>
+
+        </div>
+
+        <div class="notification-actions">
+
+          <% if notification.read %>
+
+            <span class="read-badge">
+              Read
+            </span>
+
+          <% else %>
+
+            <span class="new-badge">
+              New
+            </span>
+
+            <%= button_to "Mark as read",
+                          mark_as_read_notification_path(notification),
+                          method: :patch,
+                          class: "btn btn-secondary" %>
+
+          <% end %>
+
+        </div>
+
+      </div>
+
+    <% end %>
+
+  </div>
+
+<% else %>
+
+  <div class="empty-state">
+    <h3>No notifications</h3>
+    <p>You don't have any notifications yet.</p>
+  </div>
+
+<% end %>

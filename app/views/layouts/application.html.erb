@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Lab Portal" %></title>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Lab Portal">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+
+    <% if user_signed_in? %>
+      <%= turbo_stream_from "notifications_user_#{current_user.id}" %>
+
+      <div id="notification_popups"></div>
+    <% end %>
+
+    <% unless controller_name == "messages" && action_name == "chat" %>
+
+    <nav class="navbar">
+      <div class="navbar-container">
+
+        <%= link_to root_path, class: "navbar-brand" do %>
+          <span class="brand-icon">LP</span>
+          <span>Lab Portal</span>
+        <% end %>
+
+        <% if user_signed_in? %>
+
+          <div class="navbar-links">
+            <%= link_to "Home", root_path %>
+            <%= link_to "Posts", posts_path %>
+            <%= link_to "Users", users_path %>
+            <%= link_to "Messages", messages_path %>
+            <%= link_to "Groups", conversations_path %>
+            <%= link_to "Notifications", notifications_path %>
+          </div>
+
+          <div class="navbar-user">
+
+            <div class="user-avatar">
+              <%= current_user.username.first.upcase %>
+            </div>
+
+            <span class="navbar-username">
+              <%= current_user.username %>
+            </span>
+
+            <%= button_to "Logout",
+                          destroy_user_session_path,
+                          method: :delete,
+                          class: "btn btn-logout" %>
+          </div>
+
+        <% else %>
+
+          <div class="navbar-links">
+            <%= link_to "Login", new_user_session_path %>
+            <%= link_to "Sign Up", new_user_registration_path,
+                        class: "nav-signup" %>
+          </div>
+
+        <% end %>
+
+      </div>
+    </nav>
+    <% end %>
+
+    <main class="main-container">
+
+      <% if notice.present? %>
+        <div class="flash flash-success">
+          <%= notice %>
+        </div>
+      <% end %>
+
+      <% if alert.present? %>
+        <div class="flash flash-error">
+          <%= alert %>
+        </div>
+      <% end %>
+
+      <%= yield %>
+
+    </main>
+
+  </body>
+</html>

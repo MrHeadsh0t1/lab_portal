@@ -1,0 +1,82 @@
+<div class="group-chat">
+
+  <div class="group-chat-header">
+
+    <div>
+      <h1><%= @conversation.name %></h1>
+
+      <div class="group-chat-members">
+        <% @conversation.users.each do |user| %>
+          <span><%= user.username %></span>
+        <% end %>
+      </div>
+    </div>
+
+    <%= link_to "Back to Groups",
+                conversations_path,
+                class: "btn btn-secondary" %>
+
+  </div>
+
+
+  <div class="chat-messages group-message-area">
+
+    <% if @messages.any? %>
+
+      <% @messages.each do |message| %>
+
+        <div class="message-row <%= message.sender == current_user ? 'message-own' : 'message-other' %>">
+
+          <div class="message-bubble">
+
+            <div class="message-sender">
+              <%= message.sender.username %>
+            </div>
+
+            <div class="message-text">
+              <%= message.content %>
+            </div>
+
+            <div class="message-time">
+              <%= message.created_at.strftime("%d/%m %H:%M") %>
+            </div>
+
+          </div>
+
+        </div>
+
+      <% end %>
+
+    <% else %>
+
+      <div class="chat-empty">
+        No messages yet. Start the group conversation!
+      </div>
+
+    <% end %>
+
+  </div>
+
+
+  <div class="chat-form">
+
+    <%= form_with url: send_message_conversation_path(@conversation),
+                  method: :post do %>
+
+      <div class="chat-input-row">
+
+        <%= text_field_tag :content,
+                           nil,
+                           placeholder: "Write a message to the group...",
+                           autocomplete: "off",
+                           required: true %>
+
+        <%= submit_tag "Send", class: "btn" %>
+
+      </div>
+
+    <% end %>
+
+  </div>
+
+</div>

@@ -1,0 +1,80 @@
+<div class="auth-container">
+
+  <div class="auth-card">
+
+    <div class="auth-logo">LP</div>
+
+    <h1>Welcome Back</h1>
+
+    <p class="text-muted">
+      Sign in to continue to Lab Portal.
+    </p>
+
+    <%= form_for(resource,
+                 as: resource_name,
+                 url: session_path(resource_name)) do |f| %>
+
+      <div class="form-group">
+        <%= f.label :email %>
+
+        <%= f.email_field :email,
+                          autofocus: true,
+                          autocomplete: "email",
+                          placeholder: "Enter your email" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :password %>
+
+        <%= f.password_field :password,
+                             autocomplete: "current-password",
+                             placeholder: "Enter your password" %>
+      </div>
+
+      <% if devise_mapping.rememberable? %>
+
+        <label class="remember-row">
+          <%= f.check_box :remember_me %>
+          <span>Remember me</span>
+        </label>
+
+      <% end %>
+
+      <%= f.submit "Log In",
+                   class: "btn auth-main-button" %>
+
+    <% end %>
+
+
+    <div class="auth-divider">
+      <span>OR</span>
+    </div>
+
+
+    <%= button_to user_google_oauth2_omniauth_authorize_path,
+                  method: :post,
+                  data: { turbo: false },
+                  class: "google-button" do %>
+
+      <span class="google-letter">G</span>
+      Continue with Google
+
+    <% end %>
+
+
+    <div class="auth-links">
+
+      <p>
+        Don't have an account?
+        <%= link_to "Create account",
+                    new_user_registration_path %>
+      </p>
+
+      <%= link_to "Forgot your password?",
+                  new_user_password_path %>
+
+    </div>
+
+  </div>
+
+</div>

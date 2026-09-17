@@ -1,0 +1,88 @@
+<% if user_signed_in? %>
+
+  <div class="dashboard-header">
+    <div>
+      <h1>Welcome, <%= current_user.username %>!</h1>
+      <p class="text-muted">
+        Connect with students, share posts and collaborate on laboratory projects.
+      </p>
+    </div>
+
+    <%= link_to "Create Post", new_post_path, class: "btn" %>
+  </div>
+
+  <div class="dashboard-grid">
+
+    <%= link_to posts_path, class: "dashboard-card" do %>
+      <div class="dashboard-icon">📝</div>
+      <div>
+        <h3>Posts</h3>
+        <p>Browse, search and share posts with other students.</p>
+      </div>
+    <% end %>
+
+    <%= link_to users_path, class: "dashboard-card" do %>
+      <div class="dashboard-icon">👥</div>
+      <div>
+        <h3>Users & Contacts</h3>
+        <p>Find other users and manage your personal contacts.</p>
+      </div>
+    <% end %>
+
+    <%= link_to messages_path, class: "dashboard-card" do %>
+      <div class="dashboard-icon">💬</div>
+      <div>
+        <h3>Private Messages</h3>
+        <p>Start private conversations with your contacts.</p>
+      </div>
+    <% end %>
+
+    <%= link_to conversations_path, class: "dashboard-card" do %>
+      <div class="dashboard-icon">👨‍👩‍👧‍👦</div>
+      <div>
+        <h3>Group Chats</h3>
+        <p>Create groups and communicate with multiple users.</p>
+      </div>
+    <% end %>
+
+  </div>
+
+  <div class="card notification-summary">
+    <div>
+      <h3>Notifications</h3>
+      <p class="text-muted">
+        Stay updated with new private and group messages.
+      </p>
+    </div>
+
+    <%= render "notifications/counter", user: current_user %>
+  </div>
+
+<% else %>
+
+  <div class="hero">
+
+    <div class="hero-badge">
+      University Collaboration Platform
+    </div>
+
+    <h1>Collaborate. Communicate. Learn.</h1>
+
+    <p>
+      Lab Portal helps students find classmates, exchange posts,
+      create laboratory groups and communicate instantly.
+    </p>
+
+    <div class="hero-actions">
+      <%= link_to "Get Started",
+                  new_user_registration_path,
+                  class: "btn" %>
+
+      <%= link_to "Log In",
+                  new_user_session_path,
+                  class: "btn btn-secondary" %>
+    </div>
+
+  </div>
+
+<% end %>

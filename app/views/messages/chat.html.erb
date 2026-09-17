@@ -1,0 +1,88 @@
+<div class="chat-page">
+
+  <div class="chat-header">
+
+    <div class="chat-user">
+
+      <div class="profile-avatar small-avatar">
+        <%= @other_user.username.first.upcase %>
+      </div>
+
+      <div>
+        <h2><%= @other_user.username %></h2>
+        <span>Private conversation</span>
+      </div>
+
+    </div>
+
+    <button type="button"
+            class="btn btn-secondary"
+            onclick="window.close()">
+      Close
+    </button>
+
+  </div>
+
+
+  <div class="chat-messages">
+
+    <% if @messages.any? %>
+
+      <% @messages.each do |message| %>
+
+        <div class="message-row <%= message.sender == current_user ? 'message-own' : 'message-other' %>">
+
+          <div class="message-bubble">
+
+            <div class="message-sender">
+              <%= message.sender.username %>
+            </div>
+
+            <div class="message-text">
+              <%= message.content %>
+            </div>
+
+            <div class="message-time">
+              <%= message.created_at.strftime("%H:%M") %>
+            </div>
+
+          </div>
+
+        </div>
+
+      <% end %>
+
+    <% else %>
+
+      <div class="chat-empty">
+        No messages yet. Start the conversation!
+      </div>
+
+    <% end %>
+
+  </div>
+
+
+  <div class="chat-form">
+
+    <%= form_with url: messages_path, method: :post do %>
+
+      <%= hidden_field_tag :receiver_id, @other_user.id %>
+
+      <div class="chat-input-row">
+
+        <%= text_field_tag :content,
+                           nil,
+                           placeholder: "Write a message...",
+                           autocomplete: "off",
+                           required: true %>
+
+        <%= submit_tag "Send", class: "btn" %>
+
+      </div>
+
+    <% end %>
+
+  </div>
+
+</div>

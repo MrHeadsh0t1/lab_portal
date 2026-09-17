@@ -1,0 +1,8 @@
+<% unread_notifications = user.notifications.where(read: false).count %>
+
+<div id="notification_counter">
+  Notifications:
+  <strong><%= unread_notifications %></strong>
+
+  <%= link_to "View Notifications", notifications_path %>
+</div>
