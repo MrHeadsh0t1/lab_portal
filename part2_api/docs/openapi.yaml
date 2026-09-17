@@ -1,0 +1,407 @@
+openapi: 3.0.3
+
+info:
+  title: Todo REST API
+  version: 1.0.0
+  description: >
+    REST API developed with Ruby on Rails for user authentication
+    and management of Todos and Todo Items.
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+tags:
+  - name: Authentication
+  - name: Todos
+  - name: Items
+
+paths:
+
+  /signup:
+    post:
+      tags:
+        - Authentication
+      summary: Signup
+      description: Creates a new user account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignupRequest"
+      responses:
+        "201":
+          description: Signup successful
+        "422":
+          description: Validation error
+
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login
+      description: Authenticates a user and returns an authentication token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+        "401":
+          description: Invalid email or password
+
+  /auth/logout:
+    get:
+      tags:
+        - Authentication
+      summary: Logout
+      description: Logs out the authenticated user.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Logout successful
+        "401":
+          description: Unauthorized
+
+  /todos:
+    get:
+      tags:
+        - Todos
+      summary: List all todos and todo items
+      description: Returns all Todos belonging to the authenticated user, including their Items.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Todos retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Todo"
+        "401":
+          description: Unauthorized
+
+    post:
+      tags:
+        - Todos
+      summary: Create a new todo
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+              properties:
+                title:
+                  type: string
+                  example: Complete REST API Assignment
+      responses:
+        "201":
+          description: Todo created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        "401":
+          description: Unauthorized
+        "422":
+          description: Validation error
+
+  /todos/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Todo ID
+        schema:
+          type: integer
+
+    get:
+      tags:
+        - Todos
+      summary: Get a todo
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Todo retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Todo not found
+
+    put:
+      tags:
+        - Todos
+      summary: Update a todo
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+              properties:
+                title:
+                  type: string
+                  example: Updated Todo
+      responses:
+        "200":
+          description: Todo updated successfully
+        "401":
+          description: Unauthorized
+        "404":
+          description: Todo not found
+        "422":
+          description: Validation error
+
+    delete:
+      tags:
+        - Todos
+      summary: Delete a todo and its items
+      description: Deletes the Todo and all Items that belong to it.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Todo deleted successfully
+        "401":
+          description: Unauthorized
+        "404":
+          description: Todo not found
+
+  /todos/{id}/items:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Todo ID
+        schema:
+          type: integer
+
+    post:
+      tags:
+        - Items
+      summary: Create a new todo item
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: Create Swagger documentation
+                done:
+                  type: boolean
+                  example: false
+      responses:
+        "201":
+          description: Item created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Item"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Todo not found
+        "422":
+          description: Validation error
+
+  /todos/{id}/items/{iid}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Todo ID
+        schema:
+          type: integer
+
+      - name: iid
+        in: path
+        required: true
+        description: Item ID
+        schema:
+          type: integer
+
+    get:
+      tags:
+        - Items
+      summary: Get a todo item
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Item retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Item"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Todo or Item not found
+
+    put:
+      tags:
+        - Items
+      summary: Update a todo item
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Updated Item
+                done:
+                  type: boolean
+                  example: true
+      responses:
+        "200":
+          description: Item updated successfully
+        "401":
+          description: Unauthorized
+        "404":
+          description: Todo or Item not found
+        "422":
+          description: Validation error
+
+    delete:
+      tags:
+        - Items
+      summary: Delete a todo item
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Item deleted successfully
+        "401":
+          description: Unauthorized
+        "404":
+          description: Todo or Item not found
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Authentication token returned by login.
+
+  schemas:
+
+    SignupRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - password_confirmation
+      properties:
+        name:
+          type: string
+          example: Vaios
+        email:
+          type: string
+          format: email
+          example: vaios@example.com
+        password:
+          type: string
+          format: password
+          example: "123456"
+        password_confirmation:
+          type: string
+          format: password
+          example: "123456"
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: vaios@example.com
+        password:
+          type: string
+          format: password
+          example: "123456"
+
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Create Items API
+        done:
+          type: boolean
+          example: false
+        todo_id:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Todo:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Complete REST API Assignment
+        created_by:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Item"
